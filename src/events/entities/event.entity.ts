@@ -1,4 +1,11 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { User } from 'src/users/entities/user.entity';
 
 @Entity()
 export class Event {
@@ -16,4 +23,8 @@ export class Event {
 
   @Column()
   address: string;
+
+  @ManyToOne(() => User, (user) => user.organized)
+  @JoinColumn()
+  organizer: User;
 }

@@ -4,6 +4,7 @@ import { EventsModule } from './events/events.module';
 import { ConfigModule } from '@nestjs/config';
 import ormConfig from './config/orm.config';
 import ormConfigProd from './config/orm.config.prod';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import ormConfigProd from './config/orm.config.prod';
         process.env.NODE_ENV === 'production' ? ormConfigProd : ormConfig,
     }),
     EventsModule,
+    UsersModule,
   ],
 })
 export class AppModule {}
