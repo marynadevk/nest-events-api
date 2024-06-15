@@ -20,4 +20,16 @@ export class UserService {
       }),
     );
   }
+
+  public async findUserById(id: number): Promise<User | undefined> {
+    return await this.userRepository.findOne({
+      where: { id },
+    });
+  }
+
+  public async findUserByUsername(username: string): Promise<User | undefined> {
+    return await this.userRepository.findOne({
+      where: { username },
+    });
+  }
 }
