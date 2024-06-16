@@ -6,9 +6,9 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Attendee } from './attendee.entity';
-import { User } from 'src/users/entities/user.entity';
+import { User } from '../../users/entities/user.entity';
 import { Expose } from 'class-transformer';
-import { Paginated } from 'src/pagination/pagination';
+import { Paginated } from '../../pagination/pagination';
 
 @Entity()
 export class Event {
