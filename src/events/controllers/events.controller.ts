@@ -1,76 +1,116 @@
 import {
   Body,
+  ClassSerializerInterceptor,
   Controller,
   Delete,
+  ForbiddenException,
   Get,
   HttpCode,
   HttpStatus,
   Logger,
   NotFoundException,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
+  Query,
+  SerializeOptions,
+  UseGuards,
+  UseInterceptors,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Event } from '../entities/event.entity';
-import { CreateEventDto } from '../dtos/ceate-event.dto';
+import { AuthGuardJwt } from '../../auth/guards/auth-guard.jwt';
+import { CurrentUser } from '../../users/current-user.decorator';
+import { User } from '../../users/entities/user.entity';
+import { EventsService } from '../services/events.service';
+import { CreateEventDto } from '../dtos/create-event.dto';
+import { ListEvents } from '../dtos/list-events';
 import { UpdateEventDto } from '../dtos/update-event.dto';
 
 @Controller('/events')
+@SerializeOptions({ strategy: 'excludeAll' })
 export class EventsController {
   private readonly logger = new Logger(EventsController.name);
-  constructor(
-    @InjectRepository(Event)
-    private readonly repository: Repository<Event>,
-  ) {}
+
+  constructor(private readonly eventsService: EventsService) {}
 
   @Get()
-  async getAllEvents() {
-    return await this.repository.find();
+  @UsePipes(new ValidationPipe({ transform: true }))
+  @UseInterceptors(ClassSerializerInterceptor)
+  async findAll(@Query() filter: ListEvents) {
+    const events =
+      await this.eventsService.getEventsWithAttendeeCountFilteredPaginated(
+        filter,
+        {
+          total: true,
+          currentPage: filter.page,
+          limit: 2,
+        },
+      );
+    return events;
   }
 
   @Get(':id')
-  async getEventById(@Param('id') id) {
-    const event = await this.repository.findOne(id);
+  @UseInterceptors(ClassSerializerInterceptor)
+  async findOne(@Param('id', ParseIntPipe) id: number) {
+    const event = await this.eventsService.getEventWithAttendeeCount(id);
 
     if (!event) {
       throw new NotFoundException();
     }
+
+    return event;
   }
 
   @Post()
-  async createEvent(@Body() input: CreateEventDto) {
-    await this.repository.save({
-      ...input,
-      eventDate: new Date(input.eventDate),
-    });
+  @UseGuards(AuthGuardJwt)
+  @UseInterceptors(ClassSerializerInterceptor)
+  async create(@Body() input: CreateEventDto, @CurrentUser() user: User) {
+    return await this.eventsService.createEvent(input, user);
   }
 
   @Patch(':id')
-  async update(@Param('id') id, @Body() input: UpdateEventDto) {
-    const event = await this.repository.findOne(id);
+  @UseGuards(AuthGuardJwt)
+  @UseInterceptors(ClassSerializerInterceptor)
+  async update(
+    @Param('id', ParseIntPipe) id,
+    @Body() input: UpdateEventDto,
+    @CurrentUser() user: User,
+  ) {
+    const event = await this.eventsService.findOne(id);
 
     if (!event) {
       throw new NotFoundException();
     }
 
-    return await this.repository.save({
-      ...event,
-      ...input,
-      eventDate: input.eventDate ? new Date(input.eventDate) : event.eventDate,
-    });
+    if (event.organizerId !== user.id) {
+      throw new ForbiddenException(
+        null,
+        `You are not authorized to change this event`,
+      );
+    }
+
+    return await this.eventsService.updateEvent(event, input);
   }
 
   @Delete(':id')
+  @UseGuards(AuthGuardJwt)
   @HttpCode(HttpStatus.NO_CONTENT)
-  async remove(@Param('id') id) {
-    const event = await this.repository.findOne(id);
+  async remove(@Param('id', ParseIntPipe) id, @CurrentUser() user: User) {
+    const event = await this.eventsService.findOne(id);
 
     if (!event) {
       throw new NotFoundException();
     }
 
-    await this.repository.remove(event);
+    if (event.organizerId !== user.id) {
+      throw new ForbiddenException(
+        null,
+        `You are not authorized to remove this event`,
+      );
+    }
+
+    await this.eventsService.deleteEvent(id);
   }
 }
