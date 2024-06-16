@@ -12,5 +12,6 @@ export default registerAs(
     database: process.env.DB_NAME,
     entities: ['**/*.entity.js'],
     synchronize: true,
+    dropSchema: Boolean(parseInt(process.env.DB_DROP_SCHEMA)),
   }),
 );
