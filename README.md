@@ -1,7 +1,7 @@
 # Event Scheduling API
 
 ## Description
-This is a API for managing events and attendees, built with Nest.js, TypeORM, and GraphQL. It supports creating, updating, and deleting events, tracking attendees, and filtering events.
+This is an API for managing events and attendees, built with Nest.js, TypeORM, and GraphQL. It supports creating, updating, and deleting events, tracking attendees, and filtering events.
 
 ## Setup
 - Install dependencies with 
@@ -18,7 +18,7 @@ This is a API for managing events and attendees, built with Nest.js, TypeORM, an
 - Run the app with:
 ```bash
   # development
-  $ pnpm run start
+  $ npm run start
 
   # for watch mode
   $ npm run start:dev
@@ -37,6 +37,7 @@ Route | Method | Description | Authentication
 `/auth/login` | `POST` | Authenticate a user | No
 `/auth/profile` | `GET` | Get the current user profile | Yes
 `/users` | `POST` | Register a new user | No
+`/events/:id` | `PATCH` | Update an event | Yes
 `/events/:id/attendees` | `GET` | Get event attendees | No
 `/current-user-event-attendance/:id` | `PUT` | Attend an event | Yes
 `/current-user-event-attendance/:id` | `GET` | Get current user's attendance for a specific event | Yes
