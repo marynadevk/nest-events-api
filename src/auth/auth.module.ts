@@ -1,25 +1,38 @@
 import { Module } from '@nestjs/common';
 import { AuthController } from './controllers/auth.controller';
-import { UsersModule } from '../users/users.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { JwtModule } from '@nestjs/jwt';
+import { User } from '../users/entities/user.entity';
 import { LocalStrategy } from './strategies/local.strategy';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { AuthService } from './services/auth.service';
+import { UserController } from '../users/controllers/user.controller';
+import { AuthResolver } from './auth.resolver';
+import { UserResolver } from '../users/user.resolver';
+import { UserService } from '../users/services/user.service';
+import { UserDoesNotExistConstraint } from '../users/validators/user-does-not-exist.constraint';
 
 @Module({
   imports: [
-    UsersModule,
+    TypeOrmModule.forFeature([User]),
     JwtModule.registerAsync({
       useFactory: () => ({
         secret: process.env.AUTH_SECRET,
         signOptions: {
-          expiresIn: process.env.AUTH_EXPIRES_IN,
+          expiresIn: '60m',
         },
       }),
     }),
   ],
-  controllers: [AuthController],
-  providers: [LocalStrategy, JwtStrategy, AuthService],
-  exports: [AuthService],
+  providers: [
+    LocalStrategy,
+    JwtStrategy,
+    AuthService,
+    AuthResolver,
+    UserResolver,
+    UserService,
+    UserDoesNotExistConstraint,
+  ],
+  controllers: [AuthController, UserController],
 })
 export class AuthModule {}
