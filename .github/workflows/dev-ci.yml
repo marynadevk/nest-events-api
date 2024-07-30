@@ -50,4 +50,9 @@ jobs:
         run: docker compose up -d
 
       - name: Start application
-        run: pm2 restart ./dist/main.js --name=events-dev
+        run: |
+          if pm2 describe events-dev > /dev/null; then
+            pm2 restart events-dev --update-env
+          else
+            pm2 start ./dist/main.js --name=events-dev
+          fi
