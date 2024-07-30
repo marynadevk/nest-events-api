@@ -7,7 +7,7 @@ on:
 
 jobs:
   build-and-deploy:
-    runs-on: [self-hosted, development]
+    runs-on: [self-hosted, develop]
     environment: dev
 
     strategy:
@@ -47,10 +47,7 @@ jobs:
           sort_keys: false
 
       - name: Run Docker Compose
-        run: docker-compose up -d
-
-      - name: Run migrations
-        run: npm run migrate
+        run: docker compose up -d
 
       - name: Start application
         run: pm2 restart ./dist/main.js --name=events-dev
