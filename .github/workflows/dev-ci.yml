@@ -8,6 +8,7 @@ on:
 jobs:
   build-and-deploy:
     runs-on: [self-hosted, development]
+    environment: dev
 
     strategy:
       matrix:
@@ -44,6 +45,9 @@ jobs:
           file_name: .env
           fail_on_empty: false
           sort_keys: false
+
+      - name: Run Docker Compose
+        run: docker-compose up -d
 
       - name: Run migrations
         run: npm run migrate
