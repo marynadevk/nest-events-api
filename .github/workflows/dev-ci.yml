@@ -41,6 +41,7 @@ jobs:
           envkey_AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
           envkey_AUTH_EXPIRES_IN: ${{ vars.AUTH_EXPIRES_IN }}
           envkey_DB_DROP_SCHEMA: ${{ vars.DB_DROP_SCHEMA }}
+          envkey_PORT: ${{ vars.PORT }}
           directory: ./
           file_name: .env
           fail_on_empty: false
