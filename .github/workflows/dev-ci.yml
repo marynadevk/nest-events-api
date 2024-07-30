@@ -1,25 +1,52 @@
-name: dev actions
+name: Development CI/CD
 
 on:
   workflow_dispatch:
   push:
-    branches: [ "dev" ]
+    branches: ['dev']
 
 jobs:
-  build:
-    runs-on: [self-hosted, develop]
+  build-and-deploy:
+    runs-on: [self-hosted, development]
 
     strategy:
       matrix:
         node-version: [20.x]
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
-    - run: npm ci
-    - run: npm run build --if-present
-    - run: pm2 restart ./dist/main.js --name=events-dev
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build application
+        run: npm run build
+
+      - name: Create .env dev file
+        uses: SpicyPizza/create-envfile@v2.0.3
+        with:
+          envkey_DB_HOST: ${{ vars.DB_HOST }}
+          envkey_DB_PORT: ${{ vars.DB_PORT }}
+          envkey_DB_USER: ${{ secrets.DB_USER }}
+          envkey_DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          envkey_DB_NAME: ${{ secrets.DB_NAME }}
+          envkey_AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
+          envkey_AUTH_EXPIRES_IN: ${{ vars.AUTH_EXPIRES_IN }}
+          envkey_DB_DROP_SCHEMA: ${{ vars.DB_DROP_SCHEMA }}
+          directory: ./
+          file_name: .env
+          fail_on_empty: false
+          sort_keys: false
+
+      - name: Run migrations
+        run: npm run migrate
+
+      - name: Start application
+        run: pm2 restart ./dist/main.js --name=events-dev
