@@ -9,5 +9,7 @@ jobs:
   deploy-dev:
     uses: ./.github/workflows/reusable.yml
     with:
+      DB_USER: ${{ github.secrets.DB_USER }}
+      DB_PASSWORD: ${{ github.secrets.DB_PASSWORD }}
       environment: 'dev'
       runner-label: 'develop'
