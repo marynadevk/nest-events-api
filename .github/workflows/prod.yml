@@ -5,7 +5,7 @@ on:
 
 jobs:
   build-and-deploy:
-    uses: ./.github/workflows/reusable.yml
+    uses: reusable.yml
     with:
       environment: prod
       runner-label: production

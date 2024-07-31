@@ -7,11 +7,11 @@ on:
 
 jobs:
   build-and-deploy:
-    uses: ./.github/workflows/reusable.yml
+    uses: reusable.yml
     with:
       environment: dev
       runner-label: develop
-      
+
 # name: Development CI/CD
 
 # on:
