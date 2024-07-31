@@ -7,7 +7,7 @@ on:
 
 jobs:
   build-and-deploy:
-    uses: reusable.yml
+    uses: ./.github/workflows/reusable.yml@main
     with:
       environment: dev
       runner-label: develop
