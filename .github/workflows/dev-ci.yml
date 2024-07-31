@@ -6,11 +6,11 @@ on:
     branches: ['dev']
 
 jobs:
-  build-and-deploy:
+  deploy-dev:
     uses: ./.github/workflows/reusable.yml
     with:
-      environment: dev
-      runner-label: develop
+      environment: 'dev'
+      runner-label: 'develop'
 
 # name: Development CI/CD
 
