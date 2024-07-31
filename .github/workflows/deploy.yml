@@ -9,6 +9,15 @@ on:
       runner:
         required: true
         type: string
+    secrets:
+      DB_USER: 
+        required: true
+      DB_PASSWORD:
+        required: true
+      DB_NAME:
+        required: true
+      AUTH_SECRET:
+        required: true
 
 jobs:
   deploy-dev:
