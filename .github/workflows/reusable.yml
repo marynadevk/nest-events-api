@@ -41,7 +41,10 @@ jobs:
   build-and-deploy:
     runs-on: ${{ inputs.runner-label }}
     environment: ${{ inputs.environment }}
-        
+    
+    strategy:
+      matrix:
+        node-version: [20.x]
 
     steps:
       - name: Checkout code
