@@ -11,16 +11,19 @@ on:
         description: 'The label for the self-hosted runner'
         required: true
         type: string
-      DB_USER:
+      DB_HOST:
         required: true
         type: string
-      DB_PASSWORD:
+      DB_PORT:
         required: true
         type: string
-      DB_NAME:
+      AUTH_EXPIRES_IN:
         required: true
         type: string
-      AUTH_SECRET:
+      DB_DROP_SCHEMA:
+        required: true
+        type: string
+      PORT:
         required: true
         type: string
     secrets:
