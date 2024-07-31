@@ -1,0 +1,25 @@
+name: Production CI/CD
+
+on:
+  workflow_dispatch:
+
+jobs:
+  checkout:
+    runs-on: [self-hosted, production]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+  build:
+    needs: checkout
+    name: Build Node app
+    uses: ./.github/workflows/build-node-app.yml
+    with:
+      environment: prod
+      runner: production
+
+  deploy-prod:
+    uses: ./.github/workflows/reusable.yml
+    with:
+      environment: prod
+      runner-label: 'production'
