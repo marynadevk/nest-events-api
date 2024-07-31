@@ -11,6 +11,28 @@ on:
         description: 'The label for the self-hosted runner'
         required: true
         type: string
+      DB_USER:
+        required: true
+        type: string
+      DB_PASSWORD:
+        required: true
+        type: string
+      DB_NAME:
+        required: true
+        type: string
+      AUTH_SECRET:
+        required: true
+        type: string
+    secrets:
+      DB_USER:
+        required: true
+      DB_PASSWORD:
+        required: true
+      DB_NAME:
+        required: true
+      AUTH_SECRET:
+        required: true
+
 
 jobs:
   build-and-deploy:
