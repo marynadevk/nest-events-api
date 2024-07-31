@@ -19,7 +19,9 @@ jobs:
       runner: production
 
   deploy-prod:
-    uses: ./.github/workflows/reusable.yml
+    needs: build
+    name: Deploy to development environment 
+    uses: ./.github/workflows/deploy.yml
     with:
       environment: prod
-      runner-label: 'production'
+      runner: production

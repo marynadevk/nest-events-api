@@ -1,0 +1,43 @@
+name: Deploy
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        required: true
+        type: string
+      runner:
+        required: true
+        type: string
+
+jobs:
+  deploy-dev:
+    name: Deploy app to environment 
+    runs-on: ${{ inputs.runner }}
+    environment: ${{ inputs.environment }}
+
+    steps:
+      - name: Create .env file
+        uses: SpicyPizza/create-envfile@v2.0.3
+        with:
+          envkey_DB_HOST: ${{ vars.DB_HOST }}
+          envkey_DB_PORT: ${{ vars.DB_PORT }}
+          envkey_DB_USER: ${{ secrets.DB_USER }}
+          envkey_DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          envkey_DB_NAME: ${{ secrets.DB_NAME }}
+          envkey_AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
+          envkey_AUTH_EXPIRES_IN: ${{ vars.AUTH_EXPIRES_IN }}
+          envkey_DB_DROP_SCHEMA: ${{ vars.DB_DROP_SCHEMA }}
+          envkey_PORT: ${{ vars.PORT }}
+          directory: ./
+          file_name: .env
+          fail_on_empty: false
+          sort_keys: false
+
+      - name: Start application
+        run: |
+          if pm2 describe events-app > /dev/null; then
+            pm2 restart events-app --update-env
+          else
+            pm2 start ./dist/main.js --name=events-app
+          fi
