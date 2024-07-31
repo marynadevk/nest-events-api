@@ -12,7 +12,7 @@ on:
 
 jobs:
   build-and-deploy:
-    runs-on: [self-hosted, ${{ inputs.runner-label }}]
+    runs-on: ${{ fromJson('["self-hosted", "${inputs.runner-label}"]') }}
     environment: ${{ inputs.environment }}
 
     strategy:
