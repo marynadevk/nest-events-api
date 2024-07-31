@@ -20,37 +20,28 @@ jobs:
       environment: dev
       runner: develop
 
-  deploy-dev:
+  run-db:
     needs: build
-    name: Deploy to development environment 
+    name: Run database
     runs-on: [self-hosted, develop]
     environment: dev
-
     steps:
-      - name: Create .env file
-        uses: SpicyPizza/create-envfile@v2.0.3
-        with:
-          envkey_DB_HOST: ${{ vars.DB_HOST }}
-          envkey_DB_PORT: ${{ vars.DB_PORT }}
-          envkey_DB_USER: ${{ secrets.DB_USER }}
-          envkey_DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          envkey_DB_NAME: ${{ secrets.DB_NAME }}
-          envkey_AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
-          envkey_AUTH_EXPIRES_IN: ${{ vars.AUTH_EXPIRES_IN }}
-          envkey_DB_DROP_SCHEMA: ${{ vars.DB_DROP_SCHEMA }}
-          envkey_PORT: ${{ vars.PORT }}
-          directory: ./
-          file_name: .env
-          fail_on_empty: false
-          sort_keys: false
-
-      - name: Run Docker Compose
+      - name: Run database
         run: docker compose up -d
+        env:
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_NAME: ${{ secrets.DB_NAME }}
+          DB_PORT: ${{ vars.DB_PORT }}
 
-      - name: Start application
-        run: |
-          if pm2 describe events-app > /dev/null; then
-            pm2 restart events-app --update-env
-          else
-            pm2 start ./dist/main.js --name=events-app
-          fi
+  deploy-dev:
+    needs: run-db
+    name: Deploy to development environment 
+    uses: ./.github/workflows/deploy.yml
+    with:
+      environment: dev
+      runner: develop
+    secrets:
+      DB_USER: ${{ secrets.DB_USER }}
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      DB_NAME: ${{ secrets.DB_NAME }}
+      AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
