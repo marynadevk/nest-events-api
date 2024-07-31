@@ -1,28 +1,28 @@
-name: Development CI/CD
+name: Production Action
 
 on:
   workflow_dispatch:
-  push:
-    branches: ['dev']
 
 jobs:
   build-and-deploy:
     uses: ./.github/workflows/reusable.yml
     with:
-      environment: dev
-      runner-label: develop
-      
-# name: Development CI/CD
+      environment: prod
+      runner-label: production
+
+
+
+
+
+# name: Production Action
 
 # on:
 #   workflow_dispatch:
-#   push:
-#     branches: ['dev']
 
 # jobs:
 #   build-and-deploy:
-#     runs-on: [self-hosted, develop]
-#     environment: dev
+#     runs-on: [self-hosted, production]
+#     environment: prod
 
 #     strategy:
 #       matrix:
