@@ -64,8 +64,8 @@ jobs:
 
       - name: Start application
         run: |
-          if pm2 describe events-dev > /dev/null; then
-            pm2 restart events-dev --update-env
+          if pm2 describe events-app > /dev/null; then
+            pm2 restart events-app --update-env
           else
-            pm2 start ./dist/main.js --name=events-dev
+            pm2 start ./dist/main.js --name=events-app
           fi

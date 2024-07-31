@@ -4,68 +4,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-and-deploy:
-    uses: ./.github/workflows/reusable.yml@main
+  deploy-prod:
+    uses: ./.github/workflows/reusable.yml
     with:
       environment: prod
-      runner-label: production
-
-
-
-# name: Production Action
-
-# on:
-#   workflow_dispatch:
-
-# jobs:
-#   build-and-deploy:
-#     runs-on: [self-hosted, production]
-#     environment: prod
-
-#     strategy:
-#       matrix:
-#         node-version: [20.x]
-
-#     steps:
-#       - name: Checkout code
-#         uses: actions/checkout@v4
-
-#       - name: Use Node.js ${{ matrix.node-version }}
-#         uses: actions/setup-node@v3
-#         with:
-#           node-version: ${{ matrix.node-version }}
-#           cache: 'npm'
-
-#       - name: Install dependencies
-#         run: npm ci
-
-#       - name: Build application
-#         run: npm run build
-
-#       - name: Create .env dev file
-#         uses: SpicyPizza/create-envfile@v2.0.3
-#         with:
-#           envkey_DB_HOST: ${{ vars.DB_HOST }}
-#           envkey_DB_PORT: ${{ vars.DB_PORT }}
-#           envkey_DB_USER: ${{ secrets.DB_USER }}
-#           envkey_DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-#           envkey_DB_NAME: ${{ secrets.DB_NAME }}
-#           envkey_AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
-#           envkey_AUTH_EXPIRES_IN: ${{ vars.AUTH_EXPIRES_IN }}
-#           envkey_DB_DROP_SCHEMA: ${{ vars.DB_DROP_SCHEMA }}
-#           envkey_PORT: ${{ vars.PORT }}
-#           directory: ./
-#           file_name: .env
-#           fail_on_empty: false
-#           sort_keys: false
-
-#       - name: Run Docker Compose
-#         run: docker compose up -d
-
-#       - name: Start application
-#         run: |
-#           if pm2 describe events-dev > /dev/null; then
-#             pm2 restart events-dev --update-env
-#           else
-#             pm2 start ./dist/main.js --name=events-dev
-#           fi
+      runner-label: 'production'
