@@ -21,6 +21,7 @@ jobs:
       runner: develop
 
   test:
+    needs: build
     name: Run Tests
     runs-on: [self-hosted, develop]
     steps:
@@ -28,7 +29,7 @@ jobs:
         run: npm run test
 
   run-db:
-    needs: build
+    needs: test
     name: Run database
     runs-on: [self-hosted, develop]
     environment: dev
