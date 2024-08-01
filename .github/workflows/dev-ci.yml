@@ -20,8 +20,16 @@ jobs:
       environment: dev
       runner: develop
 
-  run-db:
+  test:
     needs: build
+    name: Run Tests
+    runs-on: [self-hosted, develop]
+    steps:
+      - name: Run tests
+        run: npm run test
+
+  run-db:
+    needs: test
     name: Run database
     runs-on: [self-hosted, develop]
     environment: dev

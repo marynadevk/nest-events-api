@@ -19,8 +19,16 @@ jobs:
       environment: prod
       runner: production
 
-  deploy-prod:
+  test:
     needs: build
+    name: Run Tests
+    runs-on: [self-hosted, production]
+    steps:
+      - name: Run tests
+        run: npm run test
+
+  deploy-prod:
+    needs: test
     name: Deploy to development environment
     uses: ./.github/workflows/deploy.yml
     with:
