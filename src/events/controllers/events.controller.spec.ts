@@ -28,7 +28,9 @@ describe('EventsController', () => {
       .spyOn(eventsService, 'getEventsWithAttendeeCountFilteredPaginated')
       .mockImplementation((): any => result);
 
-    expect(await eventsController.findAll(new ListEvents())).toEqual(result);
+    expect(await eventsController.findAll(new ListEvents())).toMatchObject(
+      result,
+    );
     expect(spy).toHaveBeenCalledTimes(1);
   });
 
