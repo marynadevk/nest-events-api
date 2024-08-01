@@ -11,6 +11,7 @@ import { AuthResolver } from './auth.resolver';
 import { UserResolver } from '../users/user.resolver';
 import { UserService } from '../users/services/user.service';
 import { UserDoesNotExistConstraint } from '../users/validators/user-does-not-exist.constraint';
+import { HomePageController } from './controllers/home-page.controller';
 
 @Module({
   imports: [
@@ -33,6 +34,6 @@ import { UserDoesNotExistConstraint } from '../users/validators/user-does-not-ex
     UserService,
     UserDoesNotExistConstraint,
   ],
-  controllers: [AuthController, UserController],
+  controllers: [AuthController, UserController, HomePageController],
 })
 export class AuthModule {}
